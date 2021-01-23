@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,5 +57,13 @@ public class GuestBookIT {
                 .andExpect(jsonPath("[0].comment").value("This is the worst website I ever visited"))
                 .andExpect(jsonPath("[1].name").value("Subhro"))
                 .andExpect(jsonPath("[1].comment").value("Gokul is always right"));
+    }
+
+    @Test
+    void test_AddNewUserComments() throws Exception {
+        Mockito.when(repo.findAll()).thenReturn(dummyUserComments);
+        mockMvc.perform(post("/userComments"))
+                .andExpect(status().isOk());
+
     }
 }
