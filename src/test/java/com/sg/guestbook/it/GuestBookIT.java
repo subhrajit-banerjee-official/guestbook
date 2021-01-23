@@ -77,6 +77,7 @@ public class GuestBookIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(uc)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("Rich & Kay"))
                 .andExpect(jsonPath("$.comment").value("100% agree with Gokul & Subhrajit"));
     }
