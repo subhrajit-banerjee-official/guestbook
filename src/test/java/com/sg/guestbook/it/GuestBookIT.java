@@ -36,25 +36,22 @@ public class GuestBookIT {
 
     List<UserComment> dummyUserComments;
 
-    @MockBean
+    @Autowired
     GuestBookRepository repo;
-
-    @BeforeEach
-    void setup(){
-        this.dummyUserComments = new ArrayList<>();
-        this.dummyUserComments.add(UserComment.builder()
-                .name("Gokul")
-                .comment("This is the worst website I ever visited")
-                .build());
-        this.dummyUserComments.add(UserComment.builder()
-                .name("Subhro")
-                .comment("Gokul is always right")
-                .build());
-    }
 
     @Test
     void test_GetAllUserComments() throws Exception {
-        Mockito.when(repo.findAll()).thenReturn(dummyUserComments);
+
+        UserComment uc = UserComment.builder()
+                .name("Gokul")
+                .comment("This is the worst website I ever visited")
+                .build();
+        repo.save(uc);
+        uc = UserComment.builder()
+                .name("Subhro")
+                .comment("Gokul is always right")
+                .build();
+        repo.save(uc);
         mockMvc.perform(get("/userComments"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("[0].name").value("Gokul"))
@@ -70,8 +67,6 @@ public class GuestBookIT {
                 .name("Rich & Kay")
                 .comment("100% agree with Gokul & Subhrajit")
                 .build();
-
-        Mockito.when(repo.save(uc)).thenReturn(uc);
 
         mockMvc.perform(post("/userComments")
                 .contentType(MediaType.APPLICATION_JSON)
