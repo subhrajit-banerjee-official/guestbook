@@ -5,6 +5,7 @@ import com.sg.guestbook.service.GuestBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,7 +22,8 @@ public class GuestBookController {
     }
 
     @PostMapping("/userComments")
-    public String addNewUserComments(){
-        return "Comment Posted Successfully";
+    public UserComment addNewUserComments(@RequestBody UserComment uc){
+        UserComment addedUC =  gbs.addUserComment(uc);
+        return addedUC;
     }
 }

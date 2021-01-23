@@ -1,6 +1,7 @@
 package com.sg.guestbook.it;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sg.guestbook.model.UserComment;
 import com.sg.guestbook.repository.GuestBookRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class GuestBookIT {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper mapper;
 
     List<UserComment> dummyUserComments;
 
@@ -61,9 +65,19 @@ public class GuestBookIT {
 
     @Test
     void test_AddNewUserComments() throws Exception {
-        Mockito.when(repo.findAll()).thenReturn(dummyUserComments);
-        mockMvc.perform(post("/userComments"))
-                .andExpect(status().isOk());
 
+        UserComment uc = UserComment.builder()
+                .name("Rich & Kay")
+                .comment("100% agree with Gokul & Subhrajit")
+                .build();
+
+        Mockito.when(repo.save(uc)).thenReturn(uc);
+
+        mockMvc.perform(post("/userComments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(uc)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Rich & Kay"))
+                .andExpect(jsonPath("$.comment").value("100% agree with Gokul & Subhrajit"));
     }
 }

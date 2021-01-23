@@ -16,4 +16,8 @@ public class GuestBookService {
     public List<UserComment> getAllUserComments() {
         return gbr.findAll();
     }
+
+    public UserComment addUserComment(UserComment uc) {
+        return gbr.save(uc);
+    }
 }
