@@ -14,7 +14,6 @@ public class GuestBookService {
     private GuestBookRepository gbr;
 
     public List<UserComment> getAllUserComments() {
-        List<UserComment> userComments = gbr.findAll();
-        return userComments;
+        return gbr.findAll();
     }
 }
